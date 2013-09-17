@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>3587F17F-7DCC-4156-A8E1-5F1E12BEB573</string>
+	<key>IDESourceControlProjectName</key>
+	<string>RITBetterBusses</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>235ED834-BD5F-49EA-BB03-1C9D51DB48AD</key>
+		<string>https://github.com/Altece/BetterBusses.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>RITBetterBusses/RITBetterBusses.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>235ED834-BD5F-49EA-BB03-1C9D51DB48AD</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/Altece/BetterBusses.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>235ED834-BD5F-49EA-BB03-1C9D51DB48AD</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>235ED834-BD5F-49EA-BB03-1C9D51DB48AD</string>
+			<key>IDESourceControlWCCName</key>
+			<string>BetterBusses</string>
+		</dict>
+	</array>
+</dict>
+</plist>
