@@ -5,36 +5,48 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>3587F17F-7DCC-4156-A8E1-5F1E12BEB573</string>
+	<string>BC32C192-CD8A-4043-83D8-00852563E4BC</string>
 	<key>IDESourceControlProjectName</key>
 	<string>RITBetterBusses</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>235ED834-BD5F-49EA-BB03-1C9D51DB48AD</key>
-		<string>https://github.com/Altece/BetterBusses.git</string>
+		<key>4365E5A4-D138-4B1C-9E34-F8960121CFBA</key>
+		<string>https://github.com/BetterBuses/BetterBuses-iOS</string>
+		<key>E4663554-C1E9-4202-917C-EB8FB72C65BE</key>
+		<string>git://github.com/BetterBuses/BetterBuses.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>RITBetterBusses/RITBetterBusses.xcodeproj/project.xcworkspace</string>
+	<string>RITBetterBusses.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>235ED834-BD5F-49EA-BB03-1C9D51DB48AD</key>
-		<string>../../..</string>
+		<key>4365E5A4-D138-4B1C-9E34-F8960121CFBA</key>
+		<string>../..</string>
+		<key>E4663554-C1E9-4202-917C-EB8FB72C65BE</key>
+		<string>../../RITBetterBusses/BetterBuses</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/Altece/BetterBusses.git</string>
+	<string>https://github.com/BetterBuses/BetterBuses-iOS</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>235ED834-BD5F-49EA-BB03-1C9D51DB48AD</string>
+	<string>4365E5A4-D138-4B1C-9E34-F8960121CFBA</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>235ED834-BD5F-49EA-BB03-1C9D51DB48AD</string>
+			<string>E4663554-C1E9-4202-917C-EB8FB72C65BE</string>
 			<key>IDESourceControlWCCName</key>
-			<string>BetterBusses</string>
+			<string>BetterBuses</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>4365E5A4-D138-4B1C-9E34-F8960121CFBA</string>
+			<key>IDESourceControlWCCName</key>
+			<string>BetterBuses-iOS</string>
 		</dict>
 	</array>
 </dict>

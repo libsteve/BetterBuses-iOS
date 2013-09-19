@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA54BCD517EAA97600B174EA /* algorithm.js in Sources */ = {isa = PBXBuildFile; fileRef = AA54BCD317EAA97600B174EA /* algorithm.js */; };
+		AA54BCD617EAA97600B174EA /* schedule.json in Resources */ = {isa = PBXBuildFile; fileRef = AA54BCD417EAA97600B174EA /* schedule.json */; };
 		AAA22C4D17E2E16C00741E5D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEDF7EF17E11FE400B4B6B1 /* Foundation.framework */; };
 		AAA22C4E17E2E16C00741E5D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEDF7F117E11FE400B4B6B1 /* CoreGraphics.framework */; };
 		AAA22C4F17E2E16C00741E5D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEDF7F317E11FE400B4B6B1 /* UIKit.framework */; };
@@ -18,12 +20,13 @@
 		AAA22C8717E418AF00741E5D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AAA22C8617E418AF00741E5D /* InfoPlist.strings */; };
 		AAA22C8A17E41EC600741E5D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AAEDF80117E11FE400B4B6B1 /* Images.xcassets */; };
 		AAA22C8D17E8A18000741E5D /* ScheduleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA22C8C17E8A18000741E5D /* ScheduleCell.m */; };
-		AAA22C9217E8EF7500741E5D /* algorithm.js in Sources */ = {isa = PBXBuildFile; fileRef = AAA22C9017E8EF7500741E5D /* algorithm.js */; };
-		AAA22C9417E8EF8B00741E5D /* algorithm.js in Resources */ = {isa = PBXBuildFile; fileRef = AAA22C9017E8EF7500741E5D /* algorithm.js */; };
-		AAA22C9517E8EF8B00741E5D /* schedule.json in Resources */ = {isa = PBXBuildFile; fileRef = AAA22C9117E8EF7500741E5D /* schedule.json */; };
+		AAA9122417EAA9A90053C794 /* algorithm.js in Resources */ = {isa = PBXBuildFile; fileRef = AA54BCD317EAA97600B174EA /* algorithm.js */; };
+		AAA9122717EAA9BA0053C794 /* NSArray+Functional.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA9122617EAA9BA0053C794 /* NSArray+Functional.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AA54BCD317EAA97600B174EA /* algorithm.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = algorithm.js; path = RITBetterBusses/BetterBuses/algorithm.js; sourceTree = "<group>"; };
+		AA54BCD417EAA97600B174EA /* schedule.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = schedule.json; path = RITBetterBusses/BetterBuses/schedule.json; sourceTree = "<group>"; };
 		AA90A83D17E12ECF00A46C10 /* BBRouteData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBRouteData.h; sourceTree = "<group>"; };
 		AA90A83E17E12ECF00A46C10 /* BBRouteData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBRouteData.m; sourceTree = "<group>"; };
 		AAA22C4C17E2E16C00741E5D /* RITBetterBusses.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RITBetterBusses.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -33,8 +36,8 @@
 		AAA22C8617E418AF00741E5D /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
 		AAA22C8B17E8A18000741E5D /* ScheduleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScheduleCell.h; sourceTree = "<group>"; };
 		AAA22C8C17E8A18000741E5D /* ScheduleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScheduleCell.m; sourceTree = "<group>"; };
-		AAA22C9017E8EF7500741E5D /* algorithm.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = algorithm.js; path = ../algorithm.js; sourceTree = "<group>"; };
-		AAA22C9117E8EF7500741E5D /* schedule.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = schedule.json; path = ../schedule.json; sourceTree = "<group>"; };
+		AAA9122517EAA9BA0053C794 /* NSArray+Functional.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Functional.h"; sourceTree = "<group>"; };
+		AAA9122617EAA9BA0053C794 /* NSArray+Functional.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Functional.m"; sourceTree = "<group>"; };
 		AAEDF7EF17E11FE400B4B6B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		AAEDF7F117E11FE400B4B6B1 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		AAEDF7F317E11FE400B4B6B1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -64,8 +67,8 @@
 		AAEDF7E317E11FE300B4B6B1 = {
 			isa = PBXGroup;
 			children = (
-				AAA22C9017E8EF7500741E5D /* algorithm.js */,
-				AAA22C9117E8EF7500741E5D /* schedule.json */,
+				AA54BCD317EAA97600B174EA /* algorithm.js */,
+				AA54BCD417EAA97600B174EA /* schedule.json */,
 				AAEDF7F517E11FE400B4B6B1 /* RITBetterBusses */,
 				AAEDF7EE17E11FE400B4B6B1 /* Frameworks */,
 				AAEDF7ED17E11FE400B4B6B1 /* Products */,
@@ -96,6 +99,8 @@
 			children = (
 				AAEDF7FE17E11FE400B4B6B1 /* AppDelegate.h */,
 				AAEDF7FF17E11FE400B4B6B1 /* AppDelegate.m */,
+				AAA9122517EAA9BA0053C794 /* NSArray+Functional.h */,
+				AAA9122617EAA9BA0053C794 /* NSArray+Functional.m */,
 				AA90A83D17E12ECF00A46C10 /* BBRouteData.h */,
 				AA90A83E17E12ECF00A46C10 /* BBRouteData.m */,
 				AAEDF82417E120AD00B4B6B1 /* Storyboard.storyboard */,
@@ -174,8 +179,8 @@
 				AAA22C7917E2E4D400741E5D /* Storyboard.storyboard in Resources */,
 				AAA22C8A17E41EC600741E5D /* Images.xcassets in Resources */,
 				AAA22C8717E418AF00741E5D /* InfoPlist.strings in Resources */,
-				AAA22C9417E8EF8B00741E5D /* algorithm.js in Resources */,
-				AAA22C9517E8EF8B00741E5D /* schedule.json in Resources */,
+				AAA9122417EAA9A90053C794 /* algorithm.js in Resources */,
+				AA54BCD617EAA97600B174EA /* schedule.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -190,7 +195,8 @@
 				AAA22C7717E2E4CD00741E5D /* AppDelegate.m in Sources */,
 				AAA22C7817E2E4CF00741E5D /* BBRouteData.m in Sources */,
 				AAA22C8D17E8A18000741E5D /* ScheduleCell.m in Sources */,
-				AAA22C9217E8EF7500741E5D /* algorithm.js in Sources */,
+				AAA9122717EAA9BA0053C794 /* NSArray+Functional.m in Sources */,
+				AA54BCD517EAA97600B174EA /* algorithm.js in Sources */,
 				AAA22C7C17E2E5BD00741E5D /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

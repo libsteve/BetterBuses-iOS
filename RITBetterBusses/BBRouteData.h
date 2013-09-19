@@ -22,9 +22,9 @@
 
 - (NSArray *)stopsReachableFromStop:(NSString *)stop;
 
-- (NSArray *)scheduleForRoute:(NSString *)route fromStop:(NSString *)source toStop:(NSString *)destination;
-- (NSDictionary *)schedulesForRoutes:(NSArray *)routes fromStop:(NSString *)source toStop:(NSString *)destination;
+- (NSArray *)scheduleForRoute:(NSString *)route fromStop:(NSString *)source toStop:(NSString *)destination onDay:(NSString *)day;
+- (NSDictionary *)schedulesForRoutes:(NSArray *)routes fromStop:(NSString *)source toStop:(NSString *)destination onDay:(NSString *)day;
 
-- (NSDictionary *)routeSchedulesFromStop:(NSString *)source toStop:(NSString *)destination;
+- (NSDictionary *)routeSchedulesFromStop:(NSString *)source toStop:(NSString *)destination onDay:(NSString *)day;
 
 @end

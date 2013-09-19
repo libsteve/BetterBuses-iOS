@@ -28,6 +28,11 @@ static NSString *NoneStopPlaceholder = @"---";
     self.scheduleTableView.contentInset = UIEdgeInsetsMake(heightInet, 0, 0, 0);
 }
 
+//- (void)viewDidAppear:(BOOL)animated {
+//    [super viewDidAppear:animated];
+//    [self.scheduleTableView reloadData];
+//}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -98,7 +103,7 @@ static NSString *NoneStopPlaceholder = @"---";
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-    if (pickerView == self.stopPicker) {
+    if (pickerView == self.stopPicker) {NSLog(@"here! %d, %d", row, component);
         switch (component) {
             case 0: {
                 NSString *selectedStop = nil;
@@ -110,10 +115,11 @@ static NSString *NoneStopPlaceholder = @"---";
                 [self.stopPicker reloadComponent:1];
                 if ([self.stopsForCurrentStop containsObject:selectedStop]) {
                     [self.stopPicker selectRow:[self.stopsForCurrentStop indexOfObject:selectedStop] inComponent:1 animated:YES];
+                    [self pickerView:pickerView didSelectRow:[self.stopsForCurrentStop indexOfObject:selectedStop] inComponent:1];
                 }
             } break;
             case 1: {
-                self.routeSchedulesForStops = [[BBRouteData routeData] routeSchedulesFromStop:self.sourceStop toStop:self.destStop];
+                self.routeSchedulesForStops = [[BBRouteData routeData] routeSchedulesFromStop:self.sourceStop toStop:self.destStop onDay:@""];
                 [self.scheduleTableView reloadData];
             } break;
         }
@@ -124,6 +130,7 @@ static NSString *NoneStopPlaceholder = @"---";
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if (tableView == self.scheduleTableView) {
+        NSLog(@"sections! %@", self.routeSchedulesForStops);
         return [self.routeSchedulesForStops count];
     }
     return 0;

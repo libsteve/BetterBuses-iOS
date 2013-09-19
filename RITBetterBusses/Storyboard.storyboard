@@ -24,7 +24,7 @@
                                     <outlet property="delegate" destination="PXX-th-Amx" id="oke-ao-ccy"/>
                                 </connections>
                             </pickerView>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="KuY-LO-UYB">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="KuY-LO-UYB">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="398"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -106,10 +106,14 @@
                                     </tableViewCell>
                                 </prototypes>
                                 <sections/>
+                                <connections>
+                                    <outlet property="dataSource" destination="PXX-th-Amx" id="z8m-lO-dhY"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="C0V-TK-zRd" firstAttribute="top" secondItem="KuY-LO-UYB" secondAttribute="bottom" constant="8" id="3EY-8T-NSo"/>
                             <constraint firstItem="uhY-D3-qLc" firstAttribute="top" secondItem="C0V-TK-zRd" secondAttribute="bottom" id="3fI-Gg-gOG"/>
                             <constraint firstItem="C0V-TK-zRd" firstAttribute="leading" secondItem="61d-L1-DQm" secondAttribute="leading" id="6N2-Ic-y6M"/>
                             <constraint firstAttribute="centerX" secondItem="C0V-TK-zRd" secondAttribute="centerX" id="Up7-Yj-fjv"/>
