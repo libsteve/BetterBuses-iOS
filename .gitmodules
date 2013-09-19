@@ -1,0 +1,3 @@
+[submodule "RITBetterBusses/BetterBuses"]
+	path = RITBetterBusses/BetterBuses
+	url = git://github.com/BetterBuses/BetterBuses.git
