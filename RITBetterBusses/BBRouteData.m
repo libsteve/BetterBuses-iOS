@@ -160,12 +160,12 @@
 #pragma mark - basic javascript interaction interfaces
 
 - (NSInteger)timevalue:(NSString *)timeString {
-    return [[[self.javascriptContext evaluateScript:[NSString stringWithFormat:@"timevalue(%@);", timeString]] toNumber] integerValue];
+    return [[[self.javascriptContext evaluateScript:[NSString stringWithFormat:@"timevalue('%@');", timeString]] toNumber] integerValue];
 }
 
 - (NSDictionary *)firstDepartureInRoute:(NSString *)route fromStop:(NSString *)source atOrAfterTime:(NSString *)time onDay:(NSString *)day {
     NSInteger targetTime = [self timevalue:time];
-    return [self.data[route][source][@"arrivals"] reduceWithDefault:nil function:^id(id result, id departure) {
+    return [self.data[route][source][@"departures"] reduceWithDefault:nil function:^id(id result, id departure) {
         NSInteger currentTime = [self timevalue:departure[@"time"]];
         if (currentTime >= targetTime) {
             if (result) {
@@ -217,7 +217,7 @@
         }
         currentTime = arrival[@"time"];
         currentStop = departure[@"to"];
-        [result addObject:@{@"departure" : departure, @"arrival" : arrival}];
+        [result addObject:@{@"departs" : departure, @"arrives" : arrival}];
         if ([currentStop isEqualToString:destination]) {
             return result;
         }

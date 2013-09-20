@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface StopPickerViewController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource, UITableViewDataSource>
+@interface StopPickerViewController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource, UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UIPickerView *stopPicker;
 @property (weak, nonatomic) IBOutlet UITableView *scheduleTableView;
 

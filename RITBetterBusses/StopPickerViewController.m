@@ -167,13 +167,23 @@ static NSString *NoneStopPlaceholder = @"---";
         NSDictionary *dest = [schedule lastObject];
         
         cell.sourceArrivalTime.text = source[@"arrives"][@"time"];
-        cell.departureTime.text = source[@"depatrs"][@"time"];
+        cell.departureTime.text = source[@"departs"][@"time"];
         
         cell.arrivalTime.text = dest[@"arrives"][@"time"];
         
         return cell;
     }
     return nil;
+}
+
+#pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (tableView == self.scheduleTableView) {
+        return 88;
+    }
+    return 0;
+    
 }
 
 @end
