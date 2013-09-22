@@ -10,7 +10,7 @@
 
 @implementation NSArray (Functional)
 
-- (instancetype)map:(id(^)(id))fn {
+- (instancetype)map:(id(^)(id v))fn {
     NSMutableArray *result = [[self class] new];
     for (id v in self) {
         [result addObject:fn(v)];
@@ -24,6 +24,15 @@
         result = fn(result, v);
     }
     return result;
+}
+
+- (instancetype)filter:(BOOL(^)(id v))fn {
+    return [self reduceWithDefault:[[self class] new] function:^id(id r, id v) {
+        if (fn(v)) {
+            r = [r arrayByAddingObject:v];
+        }
+        return r;
+    }];
 }
 
 @end

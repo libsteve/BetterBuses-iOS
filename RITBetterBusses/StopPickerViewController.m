@@ -16,7 +16,9 @@ static NSString *NoneStopPlaceholder = @"---";
 @property (readonly, nonatomic) NSString *sourceStop;
 @property (readonly, nonatomic) NSString *destStop;
 @property (strong, nonatomic) NSArray *stopsForCurrentStop;
-@property (strong, nonatomic) NSDictionary *routeSchedulesForStops;
+@property (strong, nonatomic) NSArray *schedulesForStops;
+@property (strong, nonatomic) NSString *weekday;
+@property (readonly, nonatomic) NSString *time;
 @end
 
 @implementation StopPickerViewController
@@ -26,6 +28,13 @@ static NSString *NoneStopPlaceholder = @"---";
     [super viewDidLoad];
     CGFloat heightInet = self.navigationController.navigationBar.bounds.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
     self.scheduleTableView.contentInset = UIEdgeInsetsMake(heightInet, 0, 0, 0);
+    self.scheduleTableView.scrollIndicatorInsets = UIEdgeInsetsMake(heightInet, 0, 0, 0);
+    
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"EEEE"];
+    self.weekday = [df stringFromDate:[NSDate date]];
+    
+    [NSTimer scheduledTimerWithTimeInterval:60.0 target:self.scheduleTableView selector:@selector(reloadData) userInfo:nil repeats:YES];
 }
 
 //- (void)viewDidAppear:(BOOL)animated {
@@ -55,6 +64,13 @@ static NSString *NoneStopPlaceholder = @"---";
 
 - (NSString *)destStop {
     return self.stopsForCurrentStop[[self.stopPicker selectedRowInComponent:1]];
+}
+
+- (NSString *)time {
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"hh:mma"];
+    NSString *result = [df stringFromDate:[NSDate date]];
+    return [result substringToIndex:[result length] - 1];
 }
 
 #pragma mark - UIPickerDataSource
@@ -103,7 +119,7 @@ static NSString *NoneStopPlaceholder = @"---";
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-    if (pickerView == self.stopPicker) {NSLog(@"here! %d, %d", row, component);
+    if (pickerView == self.stopPicker) {
         switch (component) {
             case 0: {
                 NSString *selectedStop = nil;
@@ -119,7 +135,7 @@ static NSString *NoneStopPlaceholder = @"---";
                 }
             } break;
             case 1: {
-                self.routeSchedulesForStops = [[BBRouteData routeData] routeSchedulesFromStop:self.sourceStop toStop:self.destStop onDay:@""];
+                self.schedulesForStops = [[BBRouteData routeData] timeSortedSchedulesFromStop:self.sourceStop toStop:self.destStop onDay:self.weekday atOrAfterTime:self.time];
                 [self.scheduleTableView reloadData];
             } break;
         }
@@ -130,46 +146,47 @@ static NSString *NoneStopPlaceholder = @"---";
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if (tableView == self.scheduleTableView) {
-        NSLog(@"sections! %@", self.routeSchedulesForStops);
-        return [self.routeSchedulesForStops count];
+        return 1;
     }
     return 0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (tableView == self.scheduleTableView) {
-        NSString *key = [self.routeSchedulesForStops allKeys][section];
-        return [(NSArray *)self.routeSchedulesForStops[key] count];
+        return [self.schedulesForStops count];
     }
     return 0;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (tableView == self.scheduleTableView) {
-        return [self.routeSchedulesForStops allKeys][section];
+        if (section == 0) {
+            return [NSString stringWithFormat:@"%@ to %@", self.sourceStop, self.destStop];
+        }
     }
     return nil;
 }
 
+static NSInteger timeLeft(NSString *current, NSString *future) {
+    NSInteger curr = [[BBRouteData routeData] timevalue:current];
+    NSInteger fut = [[BBRouteData routeData] timevalue:future];
+    NSInteger minutes = (fut - (fut / 100)) - (curr - (curr / 100));
+    NSInteger hours = (fut / 100) - (curr / 100);
+    return minutes + (hours * 60);
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSArray *schedule = ^{
-        NSArray *schedules = self.routeSchedulesForStops[[self tableView:tableView titleForHeaderInSection:indexPath.section]];
-        return schedules[indexPath.row];
-    }();
+    NSArray *schedule = self.schedulesForStops[indexPath.row];
     
     if (tableView == self.scheduleTableView) {
         ScheduleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ScheduleCell"];
         
-        cell.source.text = self.sourceStop;
-        cell.destination.text = self.destStop;
-        
         NSDictionary *source = [schedule firstObject];
         NSDictionary *dest = [schedule lastObject];
         
-        cell.sourceArrivalTime.text = source[@"arrives"][@"time"];
-        cell.departureTime.text = source[@"departs"][@"time"];
-        
-        cell.arrivalTime.text = dest[@"arrives"][@"time"];
+        cell.time.text = [NSString stringWithFormat:@"%@ to %@", source[@"departs"][@"time"], dest[@"arrives"][@"time"]];
+        cell.timeLeft.text = [NSString stringWithFormat:@"Departs in %d minutes", timeLeft(self.time, source[@"departs"][@"time"])];
+        cell.route.text = source[@"route"];
         
         return cell;
     }

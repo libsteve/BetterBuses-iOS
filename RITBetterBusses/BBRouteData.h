@@ -17,6 +17,9 @@
 
 + (instancetype)routeData;
 
+
+- (NSInteger)timevalue:(NSString *)timeString;
+
 - (NSArray *)stopsForRoute:(NSString *)route;
 - (NSArray *)routesForStop:(NSString *)stop;
 
@@ -26,5 +29,9 @@
 - (NSDictionary *)schedulesForRoutes:(NSArray *)routes fromStop:(NSString *)source toStop:(NSString *)destination onDay:(NSString *)day;
 
 - (NSDictionary *)routeSchedulesFromStop:(NSString *)source toStop:(NSString *)destination onDay:(NSString *)day;
+
+- (NSArray *)timeSortedSchedulesFromStop:(NSString *)source toStop:(NSString *)destination onDay:(NSString *)day;
+
+- (NSArray *)timeSortedSchedulesFromStop:(NSString *)source toStop:(NSString *)destination onDay:(NSString *)day atOrAfterTime:(NSString *)time;
 
 @end

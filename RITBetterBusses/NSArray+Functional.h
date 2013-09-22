@@ -10,7 +10,8 @@
 
 @interface NSArray (Functional)
 
-- (instancetype)map:(id(^)(id))fn;
+- (instancetype)map:(id(^)(id v))fn;
 - (instancetype)reduceWithDefault:(id)d function:(id(^)(id r, id v))fn;
+- (instancetype)filter:(BOOL(^)(id v))fn;
 
 @end

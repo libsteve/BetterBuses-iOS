@@ -16,8 +16,6 @@
 @property (retain, readwrite, nonatomic) NSArray *stops;
 @property (retain, readwrite, nonatomic) NSArray *routes;
 
-- (NSInteger)timevalue:(NSString *)timeString;
-
 - (NSDictionary *)firstDepartureInRoute:(NSString *)route fromStop:(NSString *)source atOrAfterTime:(NSString *)time onDay:(NSString *)day;
 - (NSDictionary *)firstArrivalFromStop:(NSString *)source InRoute:(NSString *)route toStop:(NSString *)destination afterTime:(NSString *)time onDay:(NSString *)day;
 
@@ -157,6 +155,32 @@
     return [self schedulesForRoutes:[self routesForStop:source] fromStop:source toStop:destination onDay:day];
 }
 
+- (NSArray *)timeSortedSchedulesFromStop:(NSString *)source toStop:(NSString *)destination onDay:(NSString *)day {
+    return [[[[self routeSchedulesFromStop:source toStop:destination onDay:day] allValues] reduceWithDefault:[NSMutableArray array] function:^id(NSMutableArray *result, NSArray *value) {
+        return [result arrayByAddingObjectsFromArray:value];
+    }] sortedArrayUsingComparator:^NSComparisonResult(NSArray *obj1, NSArray *obj2) {
+        NSInteger t1 = [self timevalue:[obj1 firstObject][@"departs"][@"time"]];
+        NSInteger t2 = [self timevalue:[obj2 firstObject][@"departs"][@"time"]];
+        if (t1 == t2) {
+            return NSOrderedSame;
+        } else if (t1 > t2) {
+            return NSOrderedDescending;
+        } else {
+            return NSOrderedAscending;
+        }
+    }];
+}
+
+- (NSArray *)timeSortedSchedulesFromStop:(NSString *)source toStop:(NSString *)destination onDay:(NSString *)day atOrAfterTime:(NSString *)time {
+    NSInteger currentTime = [self timevalue:time];
+    return [[self timeSortedSchedulesFromStop:source toStop:destination onDay:day] filter:^BOOL(NSArray *v) {
+        if ([self timevalue:[v firstObject][@"departs"][@"time"]] >= currentTime) {
+            return YES;
+        }
+        return NO;
+    }];
+}
+
 #pragma mark - basic javascript interaction interfaces
 
 - (NSInteger)timevalue:(NSString *)timeString {
@@ -167,7 +191,7 @@
     NSInteger targetTime = [self timevalue:time];
     return [self.data[route][source][@"departures"] reduceWithDefault:nil function:^id(id result, id departure) {
         NSInteger currentTime = [self timevalue:departure[@"time"]];
-        if (currentTime >= targetTime) {
+        if (currentTime >= targetTime && [departure[@"days"] containsObject:day]) {
             if (result) {
                 if ([self timevalue:result[@"time"]] <= currentTime) {
                     return result;
@@ -177,15 +201,13 @@
         }
         return result;
     }];
-    
-    // TODO: take the day into account
 }
 
 - (NSDictionary *)firstArrivalFromStop:(NSString *)source InRoute:(NSString *)route toStop:(NSString *)destination afterTime:(NSString *)time onDay:(NSString *)day {
     NSInteger targetTime = [self timevalue:time];
     return [self.data[route][destination][@"arrivals"] reduceWithDefault:nil function:^id(id result, id arrival) {
         NSInteger currentTime = [self timevalue:arrival[@"time"]];
-        if (currentTime > targetTime && [arrival[@"from"] isEqualToString:source]) {
+        if (currentTime > targetTime && [arrival[@"from"] isEqualToString:source] && [arrival[@"days"] containsObject:day]) {
             if (result) {
                 if (currentTime >= [self timevalue:result[@"time"]]) {
                     return result;
@@ -195,8 +217,6 @@
         }
         return result;
     }];
-    
-    // TODO: take the day into account
 }
 
 - (NSArray *)pathForRoute:(NSString *)route fromStop:(NSString *)source toStop:(NSString *)destination startingAtTime:(NSString *)time onDay:(NSString *)day {
@@ -217,7 +237,7 @@
         }
         currentTime = arrival[@"time"];
         currentStop = departure[@"to"];
-        [result addObject:@{@"departs" : departure, @"arrives" : arrival}];
+        [result addObject:@{@"departs" : departure, @"arrives" : arrival, @"route" : route}];
         if ([currentStop isEqualToString:destination]) {
             return result;
         }

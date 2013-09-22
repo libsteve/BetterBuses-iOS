@@ -9,10 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface ScheduleCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet UILabel *source;
-@property (weak, nonatomic) IBOutlet UILabel *destination;
-@property (weak, nonatomic) IBOutlet UILabel *departureTime;
-@property (weak, nonatomic) IBOutlet UILabel *arrivalTime;
-@property (weak, nonatomic) IBOutlet UILabel *sourceArrivalTime;
+@property (weak, nonatomic) IBOutlet UILabel *route;
+@property (weak, nonatomic) IBOutlet UILabel *time;
+@property (weak, nonatomic) IBOutlet UILabel *timeLeft;
+
 
 @end
