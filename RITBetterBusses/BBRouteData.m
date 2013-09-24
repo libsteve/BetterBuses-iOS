@@ -229,6 +229,10 @@
             result = nil;
             return nil;
         }
+        if ([source isEqualToString:departure[@"to"]]) {
+            result = nil;
+            return nil;
+        }
         currentTime = departure[@"time"];
         NSDictionary *arrival = [self firstArrivalFromStop:currentStop InRoute:route toStop:departure[@"to"] afterTime:currentTime onDay:day];
         if (!arrival) {
