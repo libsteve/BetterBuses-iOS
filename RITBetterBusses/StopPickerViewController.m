@@ -9,6 +9,7 @@
 #import "StopPickerViewController.h"
 #import "BBRouteData.h"
 #import "ScheduleCell.h"
+#import "RouteListViewController.h"
 
 static NSString *NoneStopPlaceholder = @"---";
 
@@ -48,10 +49,13 @@ static NSString *NoneStopPlaceholder = @"---";
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[picker]|" options:0 metrics:nil views:@{@"picker" : self.stopPicker}]];
 }
 
-//- (void)viewDidAppear:(BOOL)animated {
-//    [super viewDidAppear:animated];
-//    [self.scheduleTableView reloadData];
-//}
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    NSIndexPath *selected = [self.scheduleTableView indexPathForSelectedRow];
+    if (selected) {
+        [self.scheduleTableView deselectRowAtIndexPath:selected animated:YES];
+    }
+}
 
 - (void)didReceiveMemoryWarning
 {
@@ -148,7 +152,6 @@ static NSString *NoneStopPlaceholder = @"---";
         }
         label.text = [self titleForPickerViewForRow:row forComponent:component];
         label.textColor = [UIColor whiteColor];
-        label.tintColor = [UIColor greenColor];
         label.backgroundColor = [UIColor orangeColor];
         label.textAlignment = NSTextAlignmentCenter;
         return label;
@@ -206,10 +209,23 @@ static NSString *NoneStopPlaceholder = @"---";
     return 0;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+//    if (tableView == self.scheduleTableView) {
+//        if (section == 0) {
+//            return [NSString stringWithFormat:@"%@ to %@", self.sourceStop, self.destStop];
+//        }
+//    }
+//    return nil;
+//}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (tableView == self.scheduleTableView) {
         if (section == 0) {
-            return [NSString stringWithFormat:@"%@ to %@", self.sourceStop, self.destStop];
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, self.scheduleTableView.frame.size.width, 30)];
+            label.text = [NSString stringWithFormat:@"  %@ to %@", self.sourceStop, self.destStop];
+            label.textColor = [UIColor whiteColor];
+            label.backgroundColor = [UIColor brownColor];
+            return label;
         }
     }
     return nil;
@@ -253,7 +269,7 @@ static NSString *countdown(NSInteger tminus) {
     NSArray *schedule = self.schedulesForStops[indexPath.row];
     
     if (tableView == self.scheduleTableView) {
-        ScheduleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ScheduleCell"];
+        ScheduleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ScheduleCell" forIndexPath:indexPath];
         
         NSDictionary *source = [schedule firstObject];
         NSDictionary *dest = [schedule lastObject];
@@ -270,6 +286,10 @@ static NSString *countdown(NSInteger tminus) {
         cell.timeLeft.text = countdown(tminus);
         cell.route.text = source[@"route"];
         
+        UIView *selected = [[UIView alloc] initWithFrame:[cell frame]];
+        selected.backgroundColor = [UIColor brownColor];
+        [cell setSelectedBackgroundView:selected];
+        
         return cell;
     }
     return nil;
@@ -283,6 +303,16 @@ static NSString *countdown(NSInteger tminus) {
     }
     return 0;
     
+}
+
+#pragma mark - Segue
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"RouteSegue"]) {
+        RouteListViewController *vc = segue.destinationViewController;
+        NSInteger row = [self.scheduleTableView indexPathForSelectedRow].row;
+        vc.route = self.schedulesForStops[row];
+    }
 }
 
 @end
