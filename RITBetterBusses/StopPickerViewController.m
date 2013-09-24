@@ -229,6 +229,26 @@ static NSInteger timeLeft(NSString *current, NSString *future) {
     return (futmin - currmin) + ((futhour - currhour) * 60);
 }
 
+static NSString *countdown(NSInteger tminus) {
+    NSInteger tminushours = tminus / 60;
+    NSInteger tminusminutes = tminus - (tminushours * 60);
+    NSString *countdownString = nil;
+    if (tminushours == 0) {
+        if (tminusminutes == 0) {
+            countdownString = @"Now departing.";
+        } else {
+            countdownString = [NSString stringWithFormat:@"Departs in %d minute%s.", tminusminutes, tminusminutes == 1 ? "" : "s"];
+        }
+    } else {
+        if (tminusminutes == 0) {
+            countdownString = [NSString stringWithFormat:@"Departs in %d hour%s.", tminushours, tminushours == 1 ? "" : "s"];
+        } else {
+            countdownString = [NSString stringWithFormat:@"Departs in %d hour%s and %d minute%s.", tminushours, tminushours == 1 ? "" : "s", tminusminutes, tminusminutes == 1 ? "" : "s"];
+        }
+    }
+    return countdownString;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSArray *schedule = self.schedulesForStops[indexPath.row];
     
@@ -246,25 +266,8 @@ static NSInteger timeLeft(NSString *current, NSString *future) {
             });
         }
         
-        NSInteger tminushours = tminus / 60;
-        NSInteger tminusminutes = tminus - (tminushours * 60);
-        NSString *countdownString = nil;
-        if (tminushours == 0) {
-            if (tminusminutes == 0) {
-                countdownString = @"Now departing.";
-            } else {
-                countdownString = [NSString stringWithFormat:@"Departs in %d minute%s.", tminusminutes, tminusminutes == 1 ? "" : "s"];
-            }
-        } else {
-            if (tminusminutes == 0) {
-                countdownString = [NSString stringWithFormat:@"Departs in %d hour%s.", tminushours, tminushours == 1 ? "" : "s"];
-            } else {
-                countdownString = [NSString stringWithFormat:@"Departs in %d hour%s and %d minute%s.", tminushours, tminushours == 1 ? "" : "s", tminusminutes, tminusminutes == 1 ? "" : "s"];
-            }
-        }
-        
         cell.time.text = [NSString stringWithFormat:@"%@ to %@", source[@"departs"][@"time"], dest[@"arrives"][@"time"]];
-        cell.timeLeft.text = countdownString;
+        cell.timeLeft.text = countdown(tminus);
         cell.route.text = source[@"route"];
         
         return cell;
