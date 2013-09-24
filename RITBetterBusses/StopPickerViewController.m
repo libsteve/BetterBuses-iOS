@@ -218,14 +218,15 @@ static NSString *NoneStopPlaceholder = @"---";
 static NSInteger timeLeft(NSString *current, NSString *future) {
     NSInteger curr = [[BBRouteData routeData] timevalue:current];
     NSInteger fut = [[BBRouteData routeData] timevalue:future];
-    NSInteger result = fut - curr;
-    NSInteger minutes = result - (result / 100 * 100);
-    NSInteger hours = result / 100;
-    if (minutes >= 60) {
-        minutes -= 60;
-        hours += 1;
+    NSInteger currmin = curr - (curr / 100 * 100);
+    NSInteger futmin = fut - (fut / 100 * 100);
+    NSInteger currhour = curr / 100;
+    NSInteger futhour = fut / 100;
+    if (currmin > futmin) {
+        futmin += 60;
+        futhour -= 1;
     }
-    return minutes + (hours * 60);
+    return (futmin - currmin) + ((futhour - currhour) * 60);
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -245,8 +246,25 @@ static NSInteger timeLeft(NSString *current, NSString *future) {
             });
         }
         
+        NSInteger tminushours = tminus / 60;
+        NSInteger tminusminutes = tminus - (tminushours * 60);
+        NSString *countdownString = nil;
+        if (tminushours == 0) {
+            if (tminusminutes == 0) {
+                countdownString = @"Now departing.";
+            } else {
+                countdownString = [NSString stringWithFormat:@"Departs in %d minute%s.", tminusminutes, tminusminutes == 1 ? "" : "s"];
+            }
+        } else {
+            if (tminusminutes == 0) {
+                countdownString = [NSString stringWithFormat:@"Departs in %d hour%s.", tminushours, tminushours == 1 ? "" : "s"];
+            } else {
+                countdownString = [NSString stringWithFormat:@"Departs in %d hour%s and %d minute%s.", tminushours, tminushours == 1 ? "" : "s", tminusminutes, tminusminutes == 1 ? "" : "s"];
+            }
+        }
+        
         cell.time.text = [NSString stringWithFormat:@"%@ to %@", source[@"departs"][@"time"], dest[@"arrives"][@"time"]];
-        cell.timeLeft.text = [NSString stringWithFormat:@"Departs in %d minutes", tminus];
+        cell.timeLeft.text = countdownString;
         cell.route.text = source[@"route"];
         
         return cell;
