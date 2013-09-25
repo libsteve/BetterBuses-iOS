@@ -11,6 +11,5 @@
 @interface StopPickerViewController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource, UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UIPickerView *stopPicker;
 @property (weak, nonatomic) IBOutlet UITableView *scheduleTableView;
-@property (weak, nonatomic) IBOutlet UIScrollView *pickerScrollView;
 
 @end

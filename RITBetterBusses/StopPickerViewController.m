@@ -23,6 +23,9 @@ static NSString *NoneStopPlaceholder = @"---";
 
 @property (strong, atomic) dispatch_queue_t searchQueue;
 @property (assign, atomic) NSInteger currentSearchID;
+@property (assign, atomic) BOOL isLoading;
+
+- (void)reloadData;
 @end
 
 @implementation StopPickerViewController
@@ -30,9 +33,9 @@ static NSString *NoneStopPlaceholder = @"---";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-//    CGFloat heightInet = self.navigationController.navigationBar.bounds.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
-//    self.scheduleTableView.contentInset = UIEdgeInsetsMake(heightInet, 0, 0, 0);
-//    self.scheduleTableView.scrollIndicatorInsets = UIEdgeInsetsMake(heightInet, 0, 0, 0);
+    CGFloat heightInet = self.navigationController.navigationBar.bounds.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+    self.scheduleTableView.contentInset = UIEdgeInsetsMake(heightInet, 0, 0, 0);
+    self.scheduleTableView.scrollIndicatorInsets = UIEdgeInsetsMake(heightInet, 0, 0, 0);
     
     self.currentSearchID = 0;
     _searchQueue = dispatch_queue_create("StopPickerSearchQueue", DISPATCH_QUEUE_PRIORITY_DEFAULT);
@@ -44,7 +47,7 @@ static NSString *NoneStopPlaceholder = @"---";
     [NSTimer scheduledTimerWithTimeInterval:60.0 target:self.scheduleTableView selector:@selector(reloadData) userInfo:nil repeats:YES];
     
     [self.view removeConstraints:self.view.constraints];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[table][picker(160)]-(-8)-|" options:0 metrics:nil views:@{@"table" : self.scheduleTableView, @"picker" : self.stopPicker}]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[table]-(-8)-[picker(160)]-(-8)-|" options:0 metrics:nil views:@{@"table" : self.scheduleTableView, @"picker" : self.stopPicker}]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[table]|" options:0 metrics:nil views:@{@"table" : self.scheduleTableView}]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[picker]|" options:0 metrics:nil views:@{@"picker" : self.stopPicker}]];
 }
@@ -55,6 +58,7 @@ static NSString *NoneStopPlaceholder = @"---";
     if (selected) {
         [self.scheduleTableView deselectRowAtIndexPath:selected animated:YES];
     }
+    [self reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -88,8 +92,24 @@ static NSString *NoneStopPlaceholder = @"---";
 - (NSString *)time {
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
     [df setDateFormat:@"hh:mma"];
-    NSString *result = [df stringFromDate:[NSDate date]];
+    NSString *result = [df stringFromDate: [NSDate date]];
     return [result substringToIndex:[result length] - 1];
+}
+
+- (void)reloadData {
+    NSInteger currentID = (self.currentSearchID += 1);
+    self.isLoading = YES;
+    [self.scheduleTableView reloadData];
+    dispatch_async(self.searchQueue, ^{
+        NSArray *schedules = [[BBRouteData routeData] timeSortedSchedulesFromStop:self.sourceStop toStop:self.destStop onDay:self.weekday atOrAfterTime:self.time];
+        if (self.currentSearchID == currentID) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.isLoading = NO;
+                self.schedulesForStops = schedules;
+                [self.scheduleTableView reloadData];
+            });
+        }
+    });
 }
 
 #pragma mark - UIPickerDataSource
@@ -150,10 +170,11 @@ static NSString *NoneStopPlaceholder = @"---";
         } else {
             label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, pickerView.bounds.size.width / 2, 30)];
         }
-        label.text = [self titleForPickerViewForRow:row forComponent:component];
+//        label.text = [self titleForPickerViewForRow:row forComponent:component];
         label.textColor = [UIColor whiteColor];
-        label.backgroundColor = [UIColor orangeColor];
+        label.backgroundColor = [UIColor clearColor];
         label.textAlignment = NSTextAlignmentCenter;
+        label.attributedText = [[NSMutableAttributedString alloc] initWithString:[self titleForPickerViewForRow:row forComponent:component] attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:[UIFont systemFontSize]+4]}];
         return label;
     }
     return view;
@@ -178,16 +199,7 @@ static NSString *NoneStopPlaceholder = @"---";
                 }
             } break;
             case 1: {
-                NSInteger currentID = (self.currentSearchID += 1);
-                dispatch_async(self.searchQueue, ^{
-                    NSArray *schedules = [[BBRouteData routeData] timeSortedSchedulesFromStop:self.sourceStop toStop:self.destStop onDay:self.weekday atOrAfterTime:self.time];
-                    if (self.currentSearchID == currentID) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            self.schedulesForStops = schedules;
-                            [self.scheduleTableView reloadData];
-                        });
-                    }
-                });
+                [self reloadData];
             } break;
         }
     }
@@ -204,7 +216,11 @@ static NSString *NoneStopPlaceholder = @"---";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (tableView == self.scheduleTableView) {
-        return [self.schedulesForStops count];
+        if (self.isLoading) {
+            return 1;
+        } else {
+            return [self.schedulesForStops count] != 0 ? [self.schedulesForStops count] : 1;
+        }
     }
     return 0;
 }
@@ -266,31 +282,41 @@ static NSString *countdown(NSInteger tminus) {
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSArray *schedule = self.schedulesForStops[indexPath.row];
-    
     if (tableView == self.scheduleTableView) {
-        ScheduleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ScheduleCell" forIndexPath:indexPath];
-        
-        NSDictionary *source = [schedule firstObject];
-        NSDictionary *dest = [schedule lastObject];
-        
-        NSInteger tminus = timeLeft(self.time, source[@"departs"][@"time"]);
-        if (tminus < 0) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.schedulesForStops = [self.schedulesForStops subarrayWithRange:NSMakeRange(1, self.schedulesForStops.count - 1)];
-                [self.scheduleTableView reloadData];
-            });
+        if (self.isLoading) {
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"LoadingCell" forIndexPath:indexPath];
+            UIActivityIndicatorView *spinner = (UIActivityIndicatorView *)cell.contentView.subviews[0];
+            [spinner startAnimating];
+            return cell;
+        } else {
+            if ([self.schedulesForStops count] == 0) {
+                return [tableView dequeueReusableCellWithIdentifier:@"NoRoutesCell" forIndexPath:indexPath];
+            } else {
+                NSArray *schedule = self.schedulesForStops[indexPath.row];
+                ScheduleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ScheduleCell" forIndexPath:indexPath];
+                
+                NSDictionary *source = [schedule firstObject];
+                NSDictionary *dest = [schedule lastObject];
+                
+                NSInteger tminus = timeLeft(self.time, source[@"departs"][@"time"]);
+                if (tminus < 0) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.schedulesForStops = [self.schedulesForStops subarrayWithRange:NSMakeRange(1, self.schedulesForStops.count - 1)];
+                        [self.scheduleTableView reloadData];
+                    });
+                }
+                
+                cell.time.text = [NSString stringWithFormat:@"%@ to %@", source[@"departs"][@"time"], dest[@"arrives"][@"time"]];
+                cell.timeLeft.text = countdown(tminus);
+                cell.route.text = source[@"route"];
+                
+                UIView *selected = [[UIView alloc] initWithFrame:[cell frame]];
+                selected.backgroundColor = [UIColor brownColor];
+                [cell setSelectedBackgroundView:selected];
+                
+                return cell;
+            }
         }
-        
-        cell.time.text = [NSString stringWithFormat:@"%@ to %@", source[@"departs"][@"time"], dest[@"arrives"][@"time"]];
-        cell.timeLeft.text = countdown(tminus);
-        cell.route.text = source[@"route"];
-        
-        UIView *selected = [[UIView alloc] initWithFrame:[cell frame]];
-        selected.backgroundColor = [UIColor brownColor];
-        [cell setSelectedBackgroundView:selected];
-        
-        return cell;
     }
     return nil;
 }

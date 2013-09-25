@@ -10,7 +10,6 @@
 
 @interface RouteJumpCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *jumpTitle;
-@property (weak, nonatomic) IBOutlet UILabel *departureTime;
-@property (weak, nonatomic) IBOutlet UILabel *arrivalTime;
+@property (weak, nonatomic) IBOutlet UILabel *jumpTimes;
 
 @end
