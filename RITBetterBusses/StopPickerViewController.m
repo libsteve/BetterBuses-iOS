@@ -16,6 +16,8 @@ static NSString *NoneStopPlaceholder = @"---";
 @interface StopPickerViewController ()
 @property (readonly, nonatomic) NSString *sourceStop;
 @property (readonly, nonatomic) NSString *destStop;
+@property (strong) NSString *previousSourceStop;
+@property (strong) NSString *previousDestStop;
 @property (strong, nonatomic) NSArray *stopsForCurrentStop;
 @property (strong, nonatomic) NSArray *schedulesForStops;
 @property (strong, nonatomic) NSString *weekday;
@@ -69,6 +71,8 @@ static NSString *NoneStopPlaceholder = @"---";
     self.stopsForCurrentStop = nil;
     self.schedulesForStops = nil;
     self.weekday = nil;
+    self.previousSourceStop = nil;
+    self.previousDestStop = nil;
 }
 
 - (NSArray *)stopsForCurrentStop {
@@ -97,19 +101,27 @@ static NSString *NoneStopPlaceholder = @"---";
 }
 
 - (void)reloadData {
-    NSInteger currentID = (self.currentSearchID += 1);
-    self.isLoading = YES;
-    [self.scheduleTableView reloadData];
-    dispatch_async(self.searchQueue, ^{
-        NSArray *schedules = [[BBRouteData routeData] timeSortedSchedulesFromStop:self.sourceStop toStop:self.destStop onDay:self.weekday atOrAfterTime:self.time];
-        if (self.currentSearchID == currentID) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.isLoading = NO;
-                self.schedulesForStops = schedules;
-                [self.scheduleTableView reloadData];
-            });
-        }
-    });
+    NSString *source = self.sourceStop;
+    NSString *dest = self.destStop;
+    if ([source isEqualToString:self.previousSourceStop] && [dest isEqualToString:self.previousDestStop]) {
+        [self.scheduleTableView reloadData];
+    } else {
+        self.previousSourceStop = source;
+        self.previousDestStop = dest;
+        NSInteger currentID = (self.currentSearchID += 1);
+        self.isLoading = YES;
+        [self.scheduleTableView reloadData];
+        dispatch_async(self.searchQueue, ^{
+            NSArray *schedules = [[BBRouteData routeData] timeSortedSchedulesFromStop:source toStop:dest onDay:self.weekday atOrAfterTime:self.time];
+            if (self.currentSearchID == currentID) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.isLoading = NO;
+                    self.schedulesForStops = schedules;
+                    [self.scheduleTableView reloadData];
+                });
+            }
+        });
+    }
 }
 
 #pragma mark - UIPickerDataSource
