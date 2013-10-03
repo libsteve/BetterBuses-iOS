@@ -12,4 +12,10 @@
 @property (weak, nonatomic) IBOutlet UIPickerView *stopPicker;
 @property (weak, nonatomic) IBOutlet UITableView *scheduleTableView;
 
+@property (strong, nonatomic) NSString *weekday;
+@property (strong, nonatomic) id /* NSDate */ time;
+- (NSString *)time;
+
+- (IBAction)reverseSelectedStops:(id)sender;
+
 @end

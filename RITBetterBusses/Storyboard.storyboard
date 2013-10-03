@@ -113,7 +113,14 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Buses" id="ZhK-qS-HzL"/>
+                    <navigationItem key="navigationItem" title="Buses" id="ZhK-qS-HzL">
+                        <barButtonItem key="leftBarButtonItem" title="Settings" id="0J8-Dz-PQ9"/>
+                        <barButtonItem key="rightBarButtonItem" title="Reverse" id="wv6-7s-mOX">
+                            <connections>
+                                <action selector="reverseSelectedStops:" destination="PXX-th-Amx" id="LeS-vF-lzm"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="scheduleTableView" destination="KuY-LO-UYB" id="svr-gC-O7L"/>
                         <outlet property="stopPicker" destination="L5X-lY-nyq" id="Y2L-de-hON"/>

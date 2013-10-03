@@ -18,10 +18,9 @@ static NSString *NoneStopPlaceholder = @"---";
 @property (readonly, nonatomic) NSString *destStop;
 @property (strong) NSString *previousSourceStop;
 @property (strong) NSString *previousDestStop;
+@property (weak, readonly, nonatomic) NSArray *stops;
 @property (strong, nonatomic) NSArray *stopsForCurrentStop;
 @property (strong, nonatomic) NSArray *schedulesForStops;
-@property (strong, nonatomic) NSString *weekday;
-@property (readonly, nonatomic) NSString *time;
 
 @property (strong, atomic) dispatch_queue_t searchQueue;
 @property (assign, atomic) NSInteger currentSearchID;
@@ -41,10 +40,6 @@ static NSString *NoneStopPlaceholder = @"---";
     
     self.currentSearchID = 0;
     _searchQueue = dispatch_queue_create("StopPickerSearchQueue", DISPATCH_QUEUE_PRIORITY_DEFAULT);
-    
-    NSDateFormatter *df = [[NSDateFormatter alloc] init];
-    [df setDateFormat:@"EEEE"];
-    self.weekday = [df stringFromDate:[NSDate date]];
     
     [NSTimer scheduledTimerWithTimeInterval:60.0 target:self.scheduleTableView selector:@selector(reloadData) userInfo:nil repeats:YES];
     
@@ -85,6 +80,16 @@ static NSString *NoneStopPlaceholder = @"---";
     return _stopsForCurrentStop;
 }
 
+- (NSString *)weekday {
+    if (_weekday) {
+        return _weekday;
+    }
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"EEEE"];
+    self.weekday = [df stringFromDate:[NSDate date]];
+    return _weekday;
+}
+
 - (NSString *)sourceStop {
     return [BBRouteData routeData].stops[[self.stopPicker selectedRowInComponent:0]];
 }
@@ -96,8 +101,13 @@ static NSString *NoneStopPlaceholder = @"---";
 - (NSString *)time {
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
     [df setDateFormat:@"hh:mma"];
-    NSString *result = [df stringFromDate: [NSDate date]];
+    NSDate *date = (_time && [_time isKindOfClass:[NSDate class]]) ? _time : [NSDate date];
+    NSString *result = [df stringFromDate:date];
     return [result substringToIndex:[result length] - 1];
+}
+
+- (NSArray *)stops {
+    return [[BBRouteData routeData] stops];
 }
 
 - (void)reloadData {
@@ -121,6 +131,20 @@ static NSString *NoneStopPlaceholder = @"---";
                 });
             }
         });
+    }
+}
+
+- (IBAction)reverseSelectedStops:(id)sender {
+    NSString *nextSource = self.destStop;
+    NSString *nextDest = self.sourceStop;
+    NSUInteger indexForNextSource = [self.stops indexOfObject:nextSource];
+    NSUInteger indexForNextDest = [[[BBRouteData routeData] stopsReachableFromStop:nextSource] indexOfObject:nextDest];
+    if (indexForNextDest != NSNotFound) {
+        [self.stopPicker selectRow:indexForNextSource inComponent:0 animated:YES];
+        self.stopsForCurrentStop = [[BBRouteData routeData] stopsReachableFromStop:self.stops[indexForNextSource]];
+        [self.stopPicker reloadAllComponents];
+        [self.stopPicker selectRow:indexForNextDest inComponent:1 animated:YES];
+        [self reloadData];
     }
 }
 
@@ -201,7 +225,7 @@ static NSString *NoneStopPlaceholder = @"---";
                     NSInteger row = [self.stopPicker selectedRowInComponent:1];
                     selectedStop = [self titleForPickerViewForRow:row forComponent:1];
                 }
-                self.stopsForCurrentStop = [[BBRouteData routeData] stopsReachableFromStop:[[BBRouteData routeData] stops][row]];
+                self.stopsForCurrentStop = [[BBRouteData routeData] stopsReachableFromStop:self.stops[row]];
                 [self.stopPicker reloadComponent:1];
                 if ([self.stopsForCurrentStop containsObject:selectedStop]) {
                     [self.stopPicker selectRow:[self.stopsForCurrentStop indexOfObject:selectedStop] inComponent:1 animated:YES];
