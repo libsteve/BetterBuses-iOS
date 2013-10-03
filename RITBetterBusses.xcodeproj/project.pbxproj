@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA19002E17FE0CA300532EC8 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA19002D17FE0CA300532EC8 /* SettingsViewController.m */; };
 		AA54BCD517EAA97600B174EA /* algorithm.js in Sources */ = {isa = PBXBuildFile; fileRef = AA54BCD317EAA97600B174EA /* algorithm.js */; };
 		AA54BCD617EAA97600B174EA /* schedule.json in Resources */ = {isa = PBXBuildFile; fileRef = AA54BCD417EAA97600B174EA /* schedule.json */; };
 		AAA22C4D17E2E16C00741E5D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEDF7EF17E11FE400B4B6B1 /* Foundation.framework */; };
@@ -27,6 +28,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AA19002C17FE0CA300532EC8 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		AA19002D17FE0CA300532EC8 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		AA54BCD317EAA97600B174EA /* algorithm.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = algorithm.js; path = RITBetterBusses/BetterBuses/algorithm.js; sourceTree = "<group>"; };
 		AA54BCD417EAA97600B174EA /* schedule.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = schedule.json; path = RITBetterBusses/BetterBuses/schedule.json; sourceTree = "<group>"; };
 		AA90A83D17E12ECF00A46C10 /* BBRouteData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBRouteData.h; sourceTree = "<group>"; };
@@ -118,6 +121,8 @@
 				AAEBCF8F17F1F86F0075A9A8 /* RouteListViewController.m */,
 				AAEBCF9117F1F8ED0075A9A8 /* RouteJumpCell.h */,
 				AAEBCF9217F1F8ED0075A9A8 /* RouteJumpCell.m */,
+				AA19002C17FE0CA300532EC8 /* SettingsViewController.h */,
+				AA19002D17FE0CA300532EC8 /* SettingsViewController.m */,
 				AAEDF80117E11FE400B4B6B1 /* Images.xcassets */,
 				AAEDF7F617E11FE400B4B6B1 /* Supporting Files */,
 			);
@@ -213,6 +218,7 @@
 				AAA22C8D17E8A18000741E5D /* ScheduleCell.m in Sources */,
 				AAA9122717EAA9BA0053C794 /* NSArray+Functional.m in Sources */,
 				AA54BCD517EAA97600B174EA /* algorithm.js in Sources */,
+				AA19002E17FE0CA300532EC8 /* SettingsViewController.m in Sources */,
 				AAEBCF9017F1F86F0075A9A8 /* RouteListViewController.m in Sources */,
 				AAA22C7C17E2E5BD00741E5D /* main.m in Sources */,
 			);

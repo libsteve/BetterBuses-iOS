@@ -10,6 +10,7 @@
 #import "BBRouteData.h"
 #import "ScheduleCell.h"
 #import "RouteListViewController.h"
+#import "SettingsViewController.h"
 
 static NSString *NoneStopPlaceholder = @"---";
 
@@ -25,11 +26,13 @@ static NSString *NoneStopPlaceholder = @"---";
 @property (strong, atomic) dispatch_queue_t searchQueue;
 @property (assign, atomic) NSInteger currentSearchID;
 @property (assign, atomic) BOOL isLoading;
-
-- (void)reloadData;
 @end
 
 @implementation StopPickerViewController
+@synthesize weekday = _weekday;
+@synthesize time = _time;
+@synthesize isToday = _isToday;
+@synthesize isCurrentTime = _isCurrentTime;
 
 - (void)viewDidLoad
 {
@@ -40,6 +43,9 @@ static NSString *NoneStopPlaceholder = @"---";
     
     self.currentSearchID = 0;
     _searchQueue = dispatch_queue_create("StopPickerSearchQueue", DISPATCH_QUEUE_PRIORITY_DEFAULT);
+    
+    self.isCurrentTime = YES;
+    self.isToday = YES;
     
     [NSTimer scheduledTimerWithTimeInterval:60.0 target:self.scheduleTableView selector:@selector(reloadData) userInfo:nil repeats:YES];
     
@@ -80,14 +86,22 @@ static NSString *NoneStopPlaceholder = @"---";
     return _stopsForCurrentStop;
 }
 
+- (void)setWeekday:(NSString *)weekday {
+    if (weekday) {
+        _isToday = NO;
+    } else {
+        _isToday = YES;
+    }
+    _weekday = weekday;
+}
+
 - (NSString *)weekday {
     if (_weekday) {
         return _weekday;
     }
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
     [df setDateFormat:@"EEEE"];
-    self.weekday = [df stringFromDate:[NSDate date]];
-    return _weekday;
+    return [df stringFromDate:[NSDate date]];
 }
 
 - (NSString *)sourceStop {
@@ -96,6 +110,16 @@ static NSString *NoneStopPlaceholder = @"---";
 
 - (NSString *)destStop {
     return self.stopsForCurrentStop[[self.stopPicker selectedRowInComponent:1]];
+}
+
+- (void)setTime:(NSDate *)time {
+    if (time && [time isKindOfClass:[NSDate class]]) {
+        _isCurrentTime = NO;
+        _time = time;
+    } else {
+        _isCurrentTime = YES;
+        _time = nil;
+    }
 }
 
 - (NSString *)time {
@@ -110,10 +134,32 @@ static NSString *NoneStopPlaceholder = @"---";
     return [[BBRouteData routeData] stops];
 }
 
+- (BOOL)isToday {
+    return _weekday == nil;
+}
+
+- (void)setIsToday:(BOOL)isToday {
+    if (isToday) {
+        self.weekday = nil;
+    }
+    _isToday = isToday;
+}
+
+- (BOOL)isCurrentTime {
+    return _time == nil;
+}
+
+- (void)setIsCurrentTime:(BOOL)isCurrentTime {
+    if (isCurrentTime) {
+        self.time = nil;
+    }
+    _isCurrentTime = isCurrentTime;
+}
+
 - (void)reloadData {
     NSString *source = self.sourceStop;
     NSString *dest = self.destStop;
-    if ([source isEqualToString:self.previousSourceStop] && [dest isEqualToString:self.previousDestStop]) {
+    if ([source isEqualToString:self.previousSourceStop] && [dest isEqualToString:self.previousDestStop] && self.shouldResetData == NO) {
         [self.scheduleTableView reloadData];
     } else {
         self.previousSourceStop = source;
@@ -131,6 +177,7 @@ static NSString *NoneStopPlaceholder = @"---";
                 });
             }
         });
+        self.shouldResetData = NO;
     }
 }
 
@@ -374,6 +421,9 @@ static NSString *countdown(NSInteger tminus) {
         RouteListViewController *vc = segue.destinationViewController;
         NSInteger row = [self.scheduleTableView indexPathForSelectedRow].row;
         vc.route = self.schedulesForStops[row];
+    } else if ([segue.identifier isEqualToString:@"SettingsSegue"]) {
+        SettingsViewController *vc = segue.destinationViewController;
+        vc.mainViewController = self;
     }
 }
 
