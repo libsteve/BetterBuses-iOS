@@ -17,7 +17,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.weekdays = @[@"Monday", @"Tuesday", @"Wednesday", @"Thursday", @"Firday", @"Saturday", @"Sunday", @"Holiday"];
+    self.weekdays = @[@"Monday", @"Tuesday", @"Wednesday", @"Thursday", @"Friday", @"Saturday", @"Sunday", @"Holiday"];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -25,10 +25,12 @@
     [super viewWillAppear:animated];
     [self.todayToggle setOn:self.mainViewController.isToday animated:NO];
     [self.currentTimeToggle setOn:self.mainViewController.isCurrentTime animated:NO];
+    [self.holidayToggle setOn:[self.mainViewController.weekday isEqualToString:@"Holiday"] animated:NO];
     [self.dayPicker selectRow:[self.weekdays indexOfObject:self.mainViewController.weekday] inComponent:0 animated:NO];
     [self.timePicker setDate:self.mainViewController.timeDate animated:NO];
     [self toggleToday:nil];
     [self toggleCurrentTime:nil];
+    [self toggleHoliday:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -63,24 +65,36 @@
     }];
 }
 
+static NSString *today() {
+    NSDateFormatter *df = [NSDateFormatter new];
+    [df setDateFormat:@"EEEE"];
+    return [df stringFromDate:[NSDate date]];
+}
+
 - (IBAction)toggleToday:(id)sender {
     if (self.todayToggle.isOn) {
-        [self.dayPicker setUserInteractionEnabled:NO];
-        NSDateFormatter *df = [NSDateFormatter new];
-        [df setDateFormat:@"EEEE"];
-        NSString *currentDay = [df stringFromDate:[NSDate date]];
-        [self.dayPicker selectRow:[self.weekdays indexOfObject:currentDay] inComponent:0 animated:YES];
+        [self.dayPicker selectRow:[self.weekdays indexOfObject:today()] inComponent:0 animated:YES];
+        if (self.holidayToggle.isOn) {
+            [self.holidayToggle setOn:NO animated:YES];
+        }
     } else {
-        [self.dayPicker setUserInteractionEnabled:YES];
     }
 }
 
 - (IBAction)toggleCurrentTime:(id)sender {
     if (self.currentTimeToggle.isOn) {
-        [self.timePicker setUserInteractionEnabled:NO];
         [self.timePicker setDate:[NSDate date] animated:YES];
     } else {
-        [self.timePicker setUserInteractionEnabled:YES];
+    }
+}
+
+- (IBAction)toggleHoliday:(id)sender {
+    if (self.holidayToggle.isOn) {
+        [self.todayToggle setOn:NO animated:YES];
+        [self.dayPicker selectRow:[self.weekdays indexOfObject:@"Holiday"] inComponent:0 animated:YES];
+    } else {
+        [self.todayToggle setOn:YES animated:YES];
+        [self toggleToday:nil];
     }
 }
 
@@ -96,6 +110,28 @@
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
     return self.weekdays.count;
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    NSString *selected = self.weekdays[row];
+    if ([selected isEqualToString:today()]) {
+        [self.todayToggle setOn:YES animated:YES];
+        [self toggleToday:nil];
+    } else {
+        if (self.todayToggle.isOn) {
+            [self.todayToggle setOn:NO animated:YES];
+            [self toggleToday:nil];
+        }
+        if ([selected isEqualToString:@"Holiday"]) {
+            [self.holidayToggle setOn:YES animated:YES];
+            [self toggleHoliday:nil];
+        } else {
+            if (self.holidayToggle.isOn) {
+                [self.holidayToggle setOn:NO animated:YES];
+                [self toggleHoliday:nil];
+            }
+        }
+    }
 }
 
 @end

@@ -13,10 +13,12 @@
 @property (weak, nonatomic) StopPickerViewController *mainViewController;
 @property (weak, nonatomic) IBOutlet UISwitch *todayToggle;
 @property (weak, nonatomic) IBOutlet UISwitch *currentTimeToggle;
+@property (weak, nonatomic) IBOutlet UISwitch *holidayToggle;
 @property (weak, nonatomic) IBOutlet UIDatePicker *timePicker;
 @property (weak, nonatomic) IBOutlet UIPickerView *dayPicker;
 - (IBAction)cancel:(id)sender;
 - (IBAction)save:(id)sender;
 - (IBAction)toggleToday:(id)sender;
 - (IBAction)toggleCurrentTime:(id)sender;
+- (IBAction)toggleHoliday:(id)sender;
 @end
