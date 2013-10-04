@@ -47,7 +47,7 @@ static NSString *NoneStopPlaceholder = @"---";
     self.isCurrentTime = YES;
     self.isToday = YES;
     
-    [NSTimer scheduledTimerWithTimeInterval:60.0 target:self.scheduleTableView selector:@selector(reloadData) userInfo:nil repeats:YES];
+    [NSTimer scheduledTimerWithTimeInterval:30.0 target:self.scheduleTableView selector:@selector(reloadData) userInfo:nil repeats:YES];
     
     [self.view removeConstraints:self.view.constraints];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[table]-(-8)-[picker(160)]-(-8)-|" options:0 metrics:nil views:@{@"table" : self.scheduleTableView, @"picker" : self.stopPicker}]];
