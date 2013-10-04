@@ -402,8 +402,7 @@ static NSString *countdown(NSInteger tminus) {
                 cell.route.text = source[@"route"];
                 
                 UIView *selected = [[UIView alloc] initWithFrame:[cell frame]];
-                selected.backgroundColor = [UIColor orangeColor];
-                [selected setAlpha:.82];
+                selected.backgroundColor = [UIColor colorWithRed:1 green:0.64313725490196 blue:0 alpha:1];
                 [cell setSelectedBackgroundView:selected];
                 
                 return cell;
