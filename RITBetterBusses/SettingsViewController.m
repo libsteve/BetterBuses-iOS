@@ -26,6 +26,7 @@
     [self.todayToggle setOn:self.mainViewController.isToday animated:NO];
     [self.currentTimeToggle setOn:self.mainViewController.isCurrentTime animated:NO];
     [self.dayPicker selectRow:[self.weekdays indexOfObject:self.mainViewController.weekday] inComponent:0 animated:NO];
+    [self.timePicker setDate:self.mainViewController.timeDate animated:NO];
     [self toggleToday:nil];
     [self toggleCurrentTime:nil];
 }
@@ -41,23 +42,23 @@
 }
 
 - (IBAction)save:(id)sender {
+    // manage the current day
+    if (self.todayToggle.isOn != self.mainViewController.isToday) {
+        if (!self.todayToggle.isOn) {
+            self.mainViewController.weekday = self.weekdays[[self.dayPicker selectedRowInComponent:0]];
+        }
+        self.mainViewController.isToday = self.todayToggle.isOn;
+        self.mainViewController.shouldResetData = YES;
+    }
+    // manage the current time
+    if (self.currentTimeToggle.isOn != self.mainViewController.isCurrentTime) {
+        if (!self.currentTimeToggle.isOn) {
+            self.mainViewController.time = [self.timePicker date];
+        }
+        self.mainViewController.isCurrentTime = self.currentTimeToggle.isOn;
+        self.mainViewController.shouldResetData = YES;
+    }
     [self dismissViewControllerAnimated:YES completion:^{
-        // manage the current day
-        if (self.todayToggle.isOn != self.mainViewController.isToday) {
-            if (self.todayToggle.isOn) {
-                self.mainViewController.weekday = self.weekdays[[self.dayPicker selectedRowInComponent:0]];
-            }
-            self.mainViewController.isToday = self.todayToggle.isOn;
-            self.mainViewController.shouldResetData = YES;
-        }
-        // manage the current time
-        if (self.currentTimeToggle.isOn != self.mainViewController.isCurrentTime) {
-            if (self.currentTimeToggle.isOn) {
-                self.mainViewController.time = [self.timePicker date];
-            }
-            self.mainViewController.isCurrentTime = self.currentTimeToggle.isOn;
-            self.mainViewController.shouldResetData = YES;
-        }
         [self.mainViewController reloadData];
     }];
 }

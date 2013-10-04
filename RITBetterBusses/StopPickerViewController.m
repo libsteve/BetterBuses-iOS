@@ -130,6 +130,14 @@ static NSString *NoneStopPlaceholder = @"---";
     return [result substringToIndex:[result length] - 1];
 }
 
+- (NSDate *)timeDate {
+    if (_time) {
+        return _time;
+    } else {
+        return [NSDate date];
+    }
+}
+
 - (NSArray *)stops {
     return [[BBRouteData routeData] stops];
 }
@@ -254,7 +262,7 @@ static NSString *NoneStopPlaceholder = @"---";
             label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, pickerView.bounds.size.width / 2, 30)];
         }
 //        label.text = [self titleForPickerViewForRow:row forComponent:component];
-        label.textColor = [UIColor whiteColor];
+        label.textColor = [UIColor blackColor];
         label.backgroundColor = [UIColor clearColor];
         label.textAlignment = NSTextAlignmentCenter;
         label.attributedText = [[NSMutableAttributedString alloc] initWithString:[self titleForPickerViewForRow:row forComponent:component] attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:[UIFont systemFontSize]+4]}];
@@ -394,7 +402,8 @@ static NSString *countdown(NSInteger tminus) {
                 cell.route.text = source[@"route"];
                 
                 UIView *selected = [[UIView alloc] initWithFrame:[cell frame]];
-                selected.backgroundColor = [UIColor brownColor];
+                selected.backgroundColor = [UIColor orangeColor];
+                [selected setAlpha:.82];
                 [cell setSelectedBackgroundView:selected];
                 
                 return cell;
@@ -422,7 +431,7 @@ static NSString *countdown(NSInteger tminus) {
         NSInteger row = [self.scheduleTableView indexPathForSelectedRow].row;
         vc.route = self.schedulesForStops[row];
     } else if ([segue.identifier isEqualToString:@"SettingsSegue"]) {
-        SettingsViewController *vc = segue.destinationViewController;
+        SettingsViewController *vc = [((UINavigationController *)segue.destinationViewController) viewControllers][0];
         vc.mainViewController = self;
     }
 }

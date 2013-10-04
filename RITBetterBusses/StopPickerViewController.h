@@ -17,6 +17,7 @@
 @property (strong, nonatomic) NSString *weekday;
 @property (strong, nonatomic) id /* NSDate */ time;
 - (NSString *)time;
+- (NSDate *)timeDate;
 
 @property (assign, nonatomic) BOOL shouldResetData;
 - (void)reloadData;
