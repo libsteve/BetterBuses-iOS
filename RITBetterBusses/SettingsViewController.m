@@ -18,6 +18,7 @@
 {
     [super viewDidLoad];
     self.weekdays = @[@"Monday", @"Tuesday", @"Wednesday", @"Thursday", @"Friday", @"Saturday", @"Sunday", @"Holiday"];
+    [self.timePicker addTarget:self action:@selector(timeDidChange) forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -37,6 +38,7 @@
 {
     [super didReceiveMemoryWarning];
     self.weekdays = nil;
+    [self.timePicker removeTarget:self action:@selector(timeDidChange) forControlEvents:UIControlEventValueChanged];
 }
 
 - (IBAction)cancel:(id)sender {
@@ -53,10 +55,11 @@
         self.mainViewController.shouldResetData = YES;
     }
     // manage the current time
+    if (!self.currentTimeToggle.isOn) {
+        self.mainViewController.time = [self.timePicker date];
+        self.mainViewController.shouldResetData = YES;
+    }
     if (self.currentTimeToggle.isOn != self.mainViewController.isCurrentTime) {
-        if (!self.currentTimeToggle.isOn) {
-            self.mainViewController.time = [self.timePicker date];
-        }
         self.mainViewController.isCurrentTime = self.currentTimeToggle.isOn;
         self.mainViewController.shouldResetData = YES;
     }
@@ -78,6 +81,12 @@ static NSString *today() {
             [self.holidayToggle setOn:NO animated:YES];
         }
     } else {
+    }
+}
+
+- (void)timeDidChange {
+    if (self.currentTimeToggle.isOn) {
+        [self.currentTimeToggle setOn:NO animated:YES];
     }
 }
 
